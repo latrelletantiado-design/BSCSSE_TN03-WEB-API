@@ -2,14 +2,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy the solution and project files
+# Copy solution and project files
 COPY setupWebAPI.sln ./
 COPY setupWebAPI/setupWebAPI.csproj ./setupWebAPI/
 
 # Restore dependencies
 RUN dotnet restore setupWebAPI.sln
 
-# Copy the rest of the source code
+# Copy the rest of the source
 COPY . .
 WORKDIR /src/setupWebAPI
 RUN dotnet publish -c Release -o /app/publish
