@@ -1,23 +1,17 @@
-# Stage 1: Build
+# Use the official .NET SDK image to build the app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy solution and project files
-COPY setupWebAPI.sln ./
-COPY setupWebAPI/setupWebAPI.csproj ./setupWebAPI/
+# Copy the csproj and restore dependencies
+COPY setupWebAPI/*.csproj ./ 
+RUN dotnet restore
 
-# Restore dependencies
-RUN dotnet restore setupWebAPI.sln
-
-# Copy the rest of the source
-COPY . .
-WORKDIR /src/setupWebAPI
+# Copy everything else and build
+COPY setupWebAPI/. .
 RUN dotnet publish -c Release -o /app/publish
 
-# Stage 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# Final runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
-
-EXPOSE 8080
 ENTRYPOINT ["dotnet", "setupWebAPI.dll"]
