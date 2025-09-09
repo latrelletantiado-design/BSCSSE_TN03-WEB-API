@@ -3,7 +3,9 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy the csproj and restore dependencies
-COPY setupWebAPI/*.csproj ./ 
+COPY *.csproj ./
+RUN dotnet restore
+COPY . .
 RUN dotnet restore
 
 # Copy everything else and build
@@ -15,3 +17,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "setupWebAPI.dll"]
+
