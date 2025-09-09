@@ -1,18 +1,20 @@
-# ---- Build stage ----
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# copy sln if you have one; otherwise copy the csproj directly
-COPY *.sln . 2>/dev/null || true
+# Copy csproj and restore dependencies
+COPY setupWebAPI/setupWebAPI.csproj ./setupWebAPI/
+RUN dotnet restore ./setupWebAPI/setupWebAPI.csproj
+
+# Copy the rest of the code
 COPY . .
-RUN dotnet restore
-RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR /src/setupWebAPI
+RUN dotnet publish -c Release -o /app/publish
 
-# ---- Runtime stage ----
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# Stage 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
+COPY --from=build /app/publish .
 
-# Kestrel in official images listens on 8080 by default (http://+:8080),
-# which Render can autodetect and route to. No hardcoded port needed.
-COPY --from=build /app/publish ./
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "setupWebAPI.dll"]
