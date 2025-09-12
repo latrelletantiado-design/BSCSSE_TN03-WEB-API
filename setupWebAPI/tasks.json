@@ -1,20 +1,3 @@
 [
-  {
-    "Id": 1,
-    "Title": "Infographics",
-    "Subject": "Science Technology and Society",
-    "Deadline": "09-11-2025"
-  },
-  {
-    "Id": 2,
-    "Title": "Module 1",
-    "Subject": "PE",
-    "Deadline": "None"
-  },
-  {
-    "Id": 3,
-    "Title": "PRE-TEST",
-    "Subject": "PE",
-    "Deadline": "None"
-  }
+  
 ]
